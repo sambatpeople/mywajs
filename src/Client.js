@@ -1900,7 +1900,58 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (contact.length == 0) return null
         return contact
     }
+/**
+     * Get member request
+     * @param {*} jid 
+     * @returns 
+     */
+    async getMemberRequest(jid) {
+        const res = await this.mPage.evaluate(async (jid) => {
+            return window.extra.group.memberRequest(jid)
+        }, jid)
+        return res
+    }
 
+    async getName(jid) {
+        const contact = await this.getContactById(jid);
+        return contact.name || contact.pushname || contact.shortName || contact.number;
+    }
+
+    /**
+     * Approve member request
+     * @param {*} jid 
+     * @param {*} to 
+     * @returns 
+     */
+    async approveRequest(jid, to) {
+        const res = await this.mPage.evaluate(({
+            jid,
+            to
+        }) => {
+            return window.extra.group.approve(jid, to);
+        }, {
+            jid,
+            to
+        });
+        return res;
+    }
+
+    /**
+     * Reject member request
+     * @param {*} jid 
+     * @param {*} to 
+     */
+    async rejectRequest(jid, to) {
+        const res = await this.mPage.evaluate(({
+            jid,
+            to
+        }) => {
+            return window.extra.group.reject(jid, to)
+        }, {
+            jid,
+            to
+        })
+    }
     /**
      * 
      * @param {*} chatId 
